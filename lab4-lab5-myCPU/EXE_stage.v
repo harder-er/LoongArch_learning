@@ -105,5 +105,5 @@ assign data_sram_addr  = es_alu_result;
 assign data_sram_wdata = es_rt_value;
 
 assign EXE_dest = es_dest & {5{es_valid}}; 
-assign EXE_dest = es_alu_result;
+assign EXE_result = es_alu_result;
 endmodule

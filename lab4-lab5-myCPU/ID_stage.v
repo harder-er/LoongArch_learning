@@ -131,7 +131,7 @@ assign ds_to_es_bus = {alu_op      ,  //135:124
 //lab4
 // assign ds_ready_go    = ds_valid & ~rs_wait & ~rt_wait;
 //lab5
-assign ds_ready_go    = ds_valid  & ~load_stall
+assign ds_ready_go    = ds_valid  & ~load_stall;
 assign ds_allowin     = !ds_valid || ds_ready_go && es_allowin;
 assign ds_to_es_valid = ds_valid && ds_ready_go;
 
