@@ -1,0 +1,289 @@
+module mycpu_top(
+    input  wire        clk,
+    input  wire        resetn,
+    // inst sram interface
+    output wire        inst_sram_we,
+    output wire [31:0] inst_sram_addr,
+    output wire [31:0] inst_sram_wdata,
+    input  wire [31:0] inst_sram_rdata,
+    // data sram interface
+    output wire        data_sram_we,
+    output wire [31:0] data_sram_addr,
+    output wire [31:0] data_sram_wdata,
+    input  wire [31:0] data_sram_rdata,
+    // trace debug interface
+    output wire [31:0] debug_wb_pc,
+    output wire [ 3:0] debug_wb_rf_we,
+    output wire [ 4:0] debug_wb_rf_wnum,
+    output wire [31:0] debug_wb_rf_wdata
+);
+reg         reset;
+always @(posedge clk) reset <= ~resetn;
+
+reg         valid;
+always @(posedge clk) begin
+    if (reset) 
+        valid <= 1'b0;
+    else 
+        valid <= 1'b1;
+end
+
+wire [31:0] seq_pc;
+wire [31:0] nextpc;
+wire        br_taken;
+wire [31:0] br_target;
+wire [31:0] inst;
+reg  [31:0] pc;
+
+wire [11:0] alu_op;
+wire        load_op;
+wire        src1_is_pc;
+wire        src2_is_imm;
+wire        res_from_mem;
+wire        dst_is_r1;
+wire        gr_we;
+wire        mem_we;
+wire        src_reg_is_rd;
+wire [4: 0] dest;
+wire [31:0] rj_value;
+wire [31:0] rkd_value;
+wire [31:0] imm;
+wire [31:0] br_offs;
+wire [31:0] jirl_offs;
+
+wire [ 5:0] op_31_26;
+wire [ 3:0] op_25_22;
+wire [ 1:0] op_21_20;
+wire [ 4:0] op_19_15;
+wire [ 4:0] rd;
+wire [ 4:0] rj;
+wire [ 4:0] rk;
+wire [11:0] i12;
+wire [19:0] i20;
+wire [15:0] i16;
+wire [25:0] i26;
+
+wire [63:0] op_31_26_d;
+wire [15:0] op_25_22_d;
+wire [ 3:0] op_21_20_d;
+wire [31:0] op_19_15_d;
+
+wire        inst_add_w;
+wire        inst_sub_w;
+wire        inst_slt;
+wire        inst_sltu;
+wire        inst_nor;
+wire        inst_and;
+wire        inst_or;
+wire        inst_xor;
+wire        inst_slli_w;
+wire        inst_srli_w;
+wire        inst_srai_w;
+wire        inst_addi_w;
+wire        inst_ld_w;
+wire        inst_st_w;
+wire        inst_jirl;
+wire        inst_b;
+wire        inst_bl;
+wire        inst_beq;
+wire        inst_bne;
+wire        inst_lu12i_w;
+
+wire        need_ui5;
+wire        need_si12;
+wire        need_si16;
+wire        need_si20;
+wire        need_si26;
+wire        src2_is_4;
+
+wire [ 4:0] rf_raddr1;
+wire [31:0] rf_rdata1;
+wire [ 4:0] rf_raddr2;
+wire [31:0] rf_rdata2;
+reg        rf_we;
+wire [ 4:0] rf_waddr;
+wire [31:0] rf_wdata;
+
+wire [31:0] alu_src1   ;
+wire [31:0] alu_src2   ;
+wire [31:0] alu_result ;
+
+wire [31:0] mem_result,final_result;
+
+
+
+parameter IF  = 3'd0;
+parameter ID  = 3'd1;
+parameter EXE = 3'd2;
+parameter MEM = 3'd3;
+parameter WB  = 3'd4;
+wire [2:0] cur_state,next_state;
+always @(posedge clk) begin
+    if (reset) 
+        cur_state = 3'd0;
+    else 
+        cur_state = next_state;
+end
+
+always @(cur_state,next_state,inst_add_w,inst_sub_w,inst_slt,inst_sltu,inst_nor,
+inst_and,inst_or,inst_xor,inst_slli_w,inst_srli_w,inst_srai_w,inst_addi_w,inst_ld_w,
+inst_st_w,inst_jirl,inst_b,inst_bl,inst_beq,inst_bne,inst_lu12i_w) begin
+    case (cur_state) 
+        IF:
+            next_state <= ID;
+        ID:begin
+            if (inst_b | inst_beq | inst_bne) 
+                next_state <= IF;
+            else 
+                next_state <= EXE;            
+        end
+        EXE:begin
+            if (inst_st_w | inst_ld_w) 
+                next_state <= MEM;
+            else 
+                next_state <= WB;
+        end
+        MEM:begin
+            if (inst_ld_w)
+                next_state <= WB;
+            else 
+                next_state <= IF;
+        end
+        WB:begin
+            next_state <= IF; 
+        end
+            
+        default: cur_state = next_state;
+    endcase
+end
+assign seq_pc       = pc + 3'h4;
+assign nextpc       = br_taken ? br_target : seq_pc;
+
+always @(posedge clk) begin
+    if (reset) begin
+        rf_we <= 1'b0;
+        pc <= 32'h1bff_fffc; 
+    end
+    else begin
+        case (cur_state)
+            IF: begin
+                rf_we           <= 1'b0;
+                pc              <= nextpc;
+                inst            <= inst_sram_rdata;
+                inst_sram_addr  <= pc;
+            end
+            ID: begin
+                rf_we = 1'b0;
+                
+            end
+            EXE: begin
+                rf_we = 1'b0;
+            end
+            MEM: begin
+                rf_we = 1'b0;
+            end
+            WB : begin
+                rf_we = gr_we&&valid;
+            end
+            default:  rf_we = 1'b0;
+        endcase
+    end
+end
+assign inst_sram_we    = 1'b0;
+
+assign inst_sram_wdata = 32'b0;
+
+
+
+
+assign need_ui5   =  inst_slli_w | inst_srli_w | inst_srai_w;
+assign need_si12  =  inst_addi_w | inst_ld_w | inst_st_w;
+assign need_si16  =  inst_jirl | inst_beq | inst_bne;
+assign need_si20  =  inst_lu12i_w;
+assign need_si26  =  inst_b | inst_bl;
+assign src2_is_4  =  inst_jirl | inst_bl;
+
+assign imm = src2_is_4 ? 32'h4                      :
+             need_si20 ? {i20[19:0], 12'b0}         :
+/*need_ui5 || need_si12*/{{20{i12[11]}}, i12[11:0]} ;
+
+assign br_offs = need_si26 ? {{ 4{i26[25]}}, i26[25:0], 2'b0} :
+                             {{14{i16[15]}}, i16[15:0], 2'b0} ;
+
+assign jirl_offs = {{14{i16[15]}}, i16[15:0], 2'b0};
+
+assign src_reg_is_rd = inst_beq | inst_bne | inst_st_w;
+
+assign src1_is_pc    = inst_jirl | inst_bl |inst_b;
+
+assign src2_is_imm   = inst_slli_w |
+                       inst_srli_w |
+                       inst_srai_w |
+                       inst_addi_w |
+                       inst_ld_w   |
+                       inst_st_w   |
+                       inst_lu12i_w|
+                       inst_jirl   |
+                       inst_bl     |
+                       inst_b;
+
+assign res_from_mem  = inst_ld_w;
+assign dst_is_r1     = inst_bl;
+assign gr_we         = ~inst_st_w & ~inst_beq & ~inst_bne & ~inst_b ;
+assign mem_we        = inst_st_w;
+assign dest          = dst_is_r1 ? 5'd1 : rd;
+
+assign rf_raddr1 = rj;
+assign rf_raddr2 = src_reg_is_rd ? rd :rk;
+regfile u_regfile(
+    .clk    (clk      ),
+    .raddr1 (rf_raddr1),
+    .rdata1 (rf_rdata1),
+    .raddr2 (rf_raddr2),
+    .rdata2 (rf_rdata2),
+    .we     (rf_we    ),
+    .waddr  (rf_waddr ),
+    .wdata  (rf_wdata )
+    );
+
+assign rj_value  = rf_rdata1;
+assign rkd_value = rf_rdata2;
+
+assign rj_eq_rd = (rj_value == rkd_value);
+assign br_taken = (   inst_beq  &&  rj_eq_rd
+                   || inst_bne  && !rj_eq_rd
+                   || inst_jirl
+                   || inst_bl
+                   || inst_b
+                  ) && valid;
+assign br_target = (inst_beq || inst_bne || inst_bl || inst_b) ? (pc + br_offs) :
+                                                   /*inst_jirl*/ (rj_value + jirl_offs);
+
+assign alu_src1 = src1_is_pc  ? pc[31:0] : rj_value;
+assign alu_src2 = src2_is_imm ? imm : rkd_value;
+
+alu u_alu(
+    .alu_op     (alu_op    ),
+    .alu_src1   (alu_src1  ),
+    .alu_src2   (alu_src2  ),
+    .alu_result (alu_result)
+    );
+
+assign data_sram_we    = mem_we && valid;
+assign data_sram_addr  = alu_result;
+assign data_sram_wdata = rkd_value;
+
+assign mem_result   = data_sram_rdata;
+assign final_result = res_from_mem ? mem_result : alu_result;
+
+//assign rf_we    = gr_we && valid;
+assign rf_waddr = dest;
+assign rf_wdata = final_result;
+
+// debug info generate
+assign debug_wb_pc       = pc;
+assign debug_wb_rf_we   = {4{rf_we}};
+assign debug_wb_rf_wnum  = dest;
+assign debug_wb_rf_wdata = final_result;
+
+endmodule
