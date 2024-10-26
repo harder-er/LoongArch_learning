@@ -1,9 +1,39 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36" version="24.7.17">
   <diagram name="第 1 页" id="-SyBQIy4cX4uqoUxeaFD">
-    <mxGraphModel>
+    <mxGraphModel dx="1102" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-1" value="PC" style="html=1;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="75" y="310" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-5" value="" style="triangle;whiteSpace=wrap;html=1;dashed=0;direction=south;rotation=-180;" vertex="1" parent="1">
+          <mxGeometry x="85" y="360" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-6" value="" style="shape=ellipse;html=1;dashed=0;whiteSpace=wrap;aspect=fixed;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+          <mxGeometry x="85" y="370" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-7" value="Instr&lt;div&gt;Mem&lt;/div&gt;" style="html=1;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="160" y="370" width="100" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-10" value="" style="group;rotation=90;" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="150" y="400" width="10" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-8" value="" style="triangle;whiteSpace=wrap;html=1;dashed=0;direction=south;rotation=-90;" vertex="1" parent="5w6PfNys_Y1nwo45y3zw-10">
+          <mxGeometry x="10" y="5" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-9" value="" style="shape=ellipse;html=1;dashed=0;whiteSpace=wrap;aspect=fixed;perimeter=ellipsePerimeter;rotation=90;" vertex="1" parent="5w6PfNys_Y1nwo45y3zw-10">
+          <mxGeometry y="5" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-11" value="Instr&lt;div&gt;Mem&lt;/div&gt;" style="html=1;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="490" y="370" width="100" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-13" value="" style="triangle;whiteSpace=wrap;html=1;dashed=0;direction=south;rotation=-180;" vertex="1" parent="1">
+          <mxGeometry x="535" y="510" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="5w6PfNys_Y1nwo45y3zw-14" value="" style="shape=ellipse;html=1;dashed=0;whiteSpace=wrap;aspect=fixed;perimeter=ellipsePerimeter;rotation=0;" vertex="1" parent="1">
+          <mxGeometry x="535" y="520" width="10" height="10" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
