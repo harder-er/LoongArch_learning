@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.8.4">
   <diagram name="第 1 页" id="ME-t9XABibju69oW2RBo">
-    <mxGraphModel dx="3771" dy="2011" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3191" dy="2871" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1553,6 +1553,12 @@
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1106" y="1302" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="vkxR9KCFY0yhszCb_NEq-228" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;单周期&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="825" y="-2" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vkxR9KCFY0yhszCb_NEq-229" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;六级流水线&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="806.33" y="1035" width="110" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
